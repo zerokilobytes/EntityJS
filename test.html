@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <title>Development</title>
+  <script src="Entity.js" type="text/javascript"></script>
+  <script type="text/javascript">
+
+	function test1(){
+		var ClassA  = 
+		{
+			init : function (name)
+			{
+			  this.name = name;
+			},
+			play1 : function ()
+			{
+			  console.log('play1 called');
+			},
+		};
+		
+		ClassB  = 
+		{
+			play2: function ()
+			{
+			  console.log('play2 called');
+			},
+		};
+		
+		var A =  $e.Model.create(ClassA);
+		var B =  $e.Model.create(ClassB);
+
+		
+		a = new A('Bob');
+		console.log('value of name is ' + a.name);
+		a.play1();
+	}
+  </script>
+  <style>
+  #box {
+    width: 100px;
+    height: 100px;
+    background-color: red;
+  }
+  </style>
+</head>
+<body onload = "test1();">
+  
+</body>
+</html>
