@@ -23,7 +23,7 @@
     create: function() {
 	  var object = Entity.Model.factory();
 
-	  object.prototype = Entity.Base;
+	  object.prototype = {};
 	  object.prototype.constructor = object;
 
       Entity.Model.extend(object, arguments[0]);
