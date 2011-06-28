@@ -19,6 +19,7 @@
         this.$_parent = null;
 
         if( Entity.Type.isSet(parent.init ) ) {
+          parent.init.apply(parent, arguments);
           this.base = function() { parent.init.apply( this, arguments ); };
           Entity.Model.extend(this.base, parent);
         }
