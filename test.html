@@ -8,47 +8,40 @@
   <script type="text/javascript">
 
 	function test1(){
-		var ClassA  = 
-		{
-			init : function (first_name)
-			{
-			  this.first_name = first_name;
+
+		LivingThing = $e({
+      init : function (first_name) {
+        this.first_name = first_name;
 			},
-			play : function ()
-			{
-			  console.log('play called from ClassA');
+			play : function () {
+			  console.log('play called from Class LivingThing');
 			},
-		};
-		
-		ClassB  = 
-		{
-     extend: ClassA,
-      init : function (first_name, last_name)
-			{
+       doSomething: function() {
+        console.log('doSomething called from Class LivingThing');
+      }
+    });
+    
+    
+    
+    Person = $e({
+      extend: LivingThing,
+      init : function (first_name, last_name) {
         this.base(first_name);
-			  this.last_name = last_name;
+				this.last_name = last_name;
 			},
-     
-			play: function ()
-			{
-        this.base.play();
-			  console.log('play called from ClassB');
-			},
-		};
-		
-		var A =  $e.Model.create(ClassA);
-		var B =  $e.Model.create(ClassB);
-		
-		
+			play : function () {
+			  this.base.play();
+			  console.log('play called from Class Person');
+			}
+    });
 
-		
-		b = new B('Bob', 'Clay');
+		person = new Person('Bob', 'Clay');
 
-		console.log('value of first name is ' + b.first_name);
-    console.log('value of last name is ' + b.last_name);
+		console.log('value of first name is ' + person.first_name);
+    console.log('value of last name is ' + person.last_name);
 
-		b.play();
-
+		person.play();
+    person.doSomething();
 	}
   </script>
   <style>

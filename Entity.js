@@ -6,7 +6,7 @@
 
 (function( ){
   function Entity() {
-    //TODO: Implement
+    return Entity.Model.create(arguments[0]);
   }
   Entity.VERSION = '1.0';
   
@@ -18,9 +18,10 @@
         var parent = this._parent;
         this._parent = null;
 
-        this.base = function() { parent.init.apply( this, arguments ); };
-        
-        Entity.Model.extend(this.base, parent);
+        if( Entity.Type.isSet(parent.init ) ) {
+          this.base = function() { parent.init.apply( this, arguments ); };
+          Entity.Model.extend(this.base, parent);
+        }
         
         this.init.apply(this, arguments);
       }
@@ -38,10 +39,8 @@
       }
 
       if( Entity.Type.isSet(protoType.extend) ) {
-        object.prototype._parent = protoType.extend;
-        Entity.Model.extend(object.prototype, protoType.extend);
-      } else {
-        object.prototype._parent = {};
+        object.prototype._parent = protoType.extend.prototype;
+        Entity.Model.extend(object.prototype, protoType.extend.prototype);
       }
       
       Entity.Model.extend(object.prototype, protoType);
