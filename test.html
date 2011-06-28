@@ -10,6 +10,7 @@
 	function test1(){
 		var ClassA  = 
 		{
+      _name: 'ClassA',
 			init : function (name)
 			{
 			  this.name = name;
@@ -22,6 +23,11 @@
 		
 		ClassB  = 
 		{
+      init : function (first_name, last_name)
+			{
+			  this.last_name = last_name;
+        this.first_name = first_name;
+			},
 			play2: function ()
 			{
 			  console.log('play2 called');
@@ -38,6 +44,11 @@
 
 		console.log('value of name is ' + a.name);
 		a.play1();
+    
+    a.extend(B);
+    //a.inherit(B, 'AAX', 'CCC');
+    //console.log('++' + a.first_name);
+    console.log('++' + a.first_name);
 	}
   </script>
   <style>

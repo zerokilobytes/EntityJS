@@ -4,43 +4,56 @@
  * GNU General Public Version 2 License
  */
 
-(function(){
-  function Entity() {
+(function( ){
+  function Entity( ) {
     //TODO: Implement
   }
   Entity.VERSION = '1.0';
 
-  Entity.Base = {};
-
   Entity.Model = {
-    factory: function() {
-	  function object() {
-        this.init.apply(this, arguments);
+    $_factory: function() {
+      function object() {
+          this.init.apply(this, arguments);
       }
-	  return object;
-	},
+      return object;
+    },
 
     create: function() {
-	  var object = Entity.Model.factory();
+      var object = Entity.Model.$_factory();
 
-	  object.prototype = {};
-	  object.prototype.constructor = object;
+      object.prototype = {};
+      object.prototype.constructor = object;
 
-      Entity.Model.extend(object, arguments[0]);
+      Entity.Model.$_extend(object.prototype, arguments[0]);
 
-	  if(!Entity.Type.isSet(object.prototype.init)) {
-		  object.prototype.init = function(){};
-	  }
+      if( !Entity.Type.isSet(object.prototype.init) ) {
+        object.prototype.init = function(){};
+      }
+      
+      object.prototype.extend = Entity.Model.extend;
+      object.prototype.inherit = Entity.Model.inherit;
 
-	  return object;
+      return object;
     },
 
-    extend: function(object, args) {
+    $_extend: function(object, args) {
       for (var method in args) {
-        object.prototype[method] = args[method];
-	  }
+        object[method] = args[method];
+      }
       return object.prototype;
     },
+    
+    extend: function(parent) {
+      Entity.Model.$_extend(this, parent.prototype);
+    },
+    
+    inherit: function(parent) {
+      if( arguments.length > 1 )  {
+        parent.prototype.init.apply( this, Array.prototype.slice.call( arguments, 1 ) );
+      } else  {
+        parent.call(this);
+      }
+    }
   };
 
   Entity.Enumerable = {
@@ -48,7 +61,7 @@
 	  var length = args.length;
 	  var result = new Array(length);
 
-	  for(var i = 0; i < length; i++) {
+	  for( var i = 0; i < length; i++ ) {
 	    result[i] = args[i];
 	  }
 	  return result;
