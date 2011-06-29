@@ -1,57 +1,66 @@
 /*!
  * Entity JavaScript
- * Copyright (C) 2011-2011 Anonymous Developer
+ * Copyright (C) 2011-2012 Markel Mairs
  * GNU General Public Version 2 License
  */
 
 (function( ){
-  function Entity( ) {
+  function Entity() {
     //TODO: Implement
   }
   Entity.VERSION = '1.0';
+  
+  Entity.ModelBase = {};
 
   Entity.Model = {
-    $_factory: function() {
-      function object() {
-          this.init.apply(this, arguments);
+    factory: function() {
+      return function() {
+        var parent = this._parent;
+        this._parent = null;
+
+        this.base = function() { parent.init.apply( this, arguments ); };
+        
+        Entity.Model.extend(this.base, parent);
+        
+        this.init.apply(this, arguments);
       }
-      return object;
     },
 
     create: function() {
-      var object = Entity.Model.$_factory();
+      protoType = arguments[0];
+      var object = Entity.Model.factory();
 
       object.prototype = {};
       object.prototype.constructor = object;
 
-      Entity.Model.$_extend(object.prototype, arguments[0]);
+      if( !Entity.Type.isSet(protoType.init) ) {
+        protoType.init = function(){};
+      }
 
-      if( !Entity.Type.isSet(object.prototype.init) ) {
-        object.prototype.init = function(){};
+      if( Entity.Type.isSet(protoType.extend) ) {
+        object.prototype._parent = protoType.extend;
+        Entity.Model.extend(object.prototype, protoType.extend);
+      } else {
+        object.prototype._parent = {};
       }
       
-      object.prototype.extend = Entity.Model.extend;
-      object.prototype.inherit = Entity.Model.inherit;
-
+      Entity.Model.extend(object.prototype, protoType);
+      
       return object;
     },
 
-    $_extend: function(object, args) {
+    extend: function(object, args) {
       for (var method in args) {
         object[method] = args[method];
       }
       return object.prototype;
     },
-    
-    extend: function(parent) {
-      Entity.Model.$_extend(this, parent.prototype);
-    },
-    
-    inherit: function(parent) {
+
+    apply: function(parent) {
       if( arguments.length > 1 )  {
-        parent.prototype.init.apply( this, Array.prototype.slice.call( arguments, 1 ) );
+        return parent.prototype.init.apply( this, Array.prototype.slice.call( arguments, 1 ) );
       } else  {
-        parent.call(this);
+        return parent.call(this);
       }
     }
   };

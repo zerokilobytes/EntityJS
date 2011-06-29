@@ -10,27 +10,29 @@
 	function test1(){
 		var ClassA  = 
 		{
-      _name: 'ClassA',
-			init : function (name)
+			init : function (first_name)
 			{
-			  this.name = name;
+			  this.first_name = first_name;
 			},
-			play1 : function ()
+			play : function ()
 			{
-			  console.log('play1 called');
+			  console.log('play called from ClassA');
 			},
 		};
 		
 		ClassB  = 
 		{
+     extend: ClassA,
       init : function (first_name, last_name)
 			{
+        this.base(first_name);
 			  this.last_name = last_name;
-        this.first_name = first_name;
 			},
-			play2: function ()
+     
+			play: function ()
 			{
-			  console.log('play2 called');
+        this.base.play();
+			  console.log('play called from ClassB');
 			},
 		};
 		
@@ -40,15 +42,13 @@
 		
 
 		
-		a = new A('Bob');
+		b = new B('Bob', 'Clay');
 
-		console.log('value of name is ' + a.name);
-		a.play1();
-    
-    a.extend(B);
-    //a.inherit(B, 'AAX', 'CCC');
-    //console.log('++' + a.first_name);
-    console.log('++' + a.first_name);
+		console.log('value of first name is ' + b.first_name);
+    console.log('value of last name is ' + b.last_name);
+
+		b.play();
+
 	}
   </script>
   <style>
@@ -59,7 +59,7 @@
   }
   </style>
 </head>
-<body onload = "test1();">
+<body onload = "test1()">
   
 </body>
 </html>
