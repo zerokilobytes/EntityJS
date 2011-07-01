@@ -10,18 +10,20 @@
 	function test1(){
 
 		LivingThing = $e({
+      cname: 'LivingThing',
       init : function (first_name) {
         this.first_name = first_name;
 			},
 			play : function () {
-			  console.log('play called from Class LivingThing');
+			  console.log(this.first_name + ' played from Class LivingThing');
 			},
        doSomething: function() {
-        console.log('doSomething called from Class LivingThing');
+        console.log(this.first_name + ' did something from Class LivingThing');
       }
     });
 
     Person = $e({
+      cname: 'Person',
       extend: LivingThing,
       init : function (first_name, last_name) {
         this.base(first_name);
@@ -29,9 +31,14 @@
 			},
 			play : function () {
 			  this.base.play();
-			  console.log('play called from Class Person');
+			  console.log(this.first_name + ' played from Class Person');
 			}
     });
+    
+    livingThing = new LivingThing('Dog');
+    livingThing.play();
+    
+    //return;
 
 		person = new Person('Bob', 'Clay');
 

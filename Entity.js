@@ -15,11 +15,11 @@
   Entity.Model = {
     factory: function() {
       return function() {
-        var parent = this._parent;
-        this._parent = null;
+        var parent = this.$_parent;
+        this.$_parent = null;
 
         if( Entity.Type.isSet(parent.init ) ) {
-          this.base = function() { return parent.init.apply( this, arguments ); };
+          this.base = function() { parent.init.apply( this, arguments ); };
           Entity.Model.extend(this.base, parent);
         }
         
@@ -39,8 +39,10 @@
       }
 
       if( Entity.Type.isSet(protoType.extend) ) {
-        object.prototype._parent = protoType.extend.prototype;
+        object.prototype.$_parent = protoType.extend.prototype;
         Entity.Model.extend(object.prototype, protoType.extend.prototype);
+      } else {
+        object.prototype.$_parent = {init: function(){}};
       }
       
       Entity.Model.extend(object.prototype, protoType);
@@ -50,7 +52,9 @@
 
     extend: function(object, args) {
       for (var method in args) {
-        object[method] = args[method];
+        if(method != 'constructor' && method != '$_parent') {
+          object[method] = args[method];
+        }
       }
       return object.prototype;
     },
