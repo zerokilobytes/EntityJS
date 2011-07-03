@@ -4,30 +4,67 @@
  * GNU General Public Version 2 License
  */
 
-(function( ){
+(function(){
   function Entity() {
     return Entity.Model.create(arguments[0]);
   }
-  Entity.VERSION = '1.0';
   
-  Entity.ModelBase = {};
+  function getEntityBase() {
+    return {
+      extend: {},
+      
+      init : function () {
+			},
+      
+      base: function(){
+        console.log('Base ready >>>');
+        return this;
+      }
+    }
+  }
+  
+  function hasOwnProperty(obj, prop){
+    return (typeof(obj[prop]) !== 'undefined');
+    }
+
+  Entity.VERSION = '1.0';
 
   Entity.Model = {
     factory: function() {
       return function() {
         var parent = this.$_parent;
-        this.$_parent = null;
-
-        if( Entity.Type.isSet(parent.init ) ) {
-          parent.init.apply(parent, arguments);
-          this.base = function() { parent.init.apply( this, arguments ); };
-          Entity.Model.extend(this.base, parent);
-        }
+        var current  = this;
+        //this.$_parent = null;
         
-        this.init.apply(this, arguments);
-      }
-    },
+        if( Entity.Type.isSet(this ) ) {
+          initStack = function(object, collection)
+            {
+              if(hasOwnProperty(object,'$_parent')) {
+                collection.push(object['$_parent']);
+                initStack(object['$_parent'], collection);
+              }
+              return;
+          };
+            
+          initializers = [];
+          initStack(this, initializers);
 
+          var len = initializers.length;
+          for(var i=0; i<len; i++) {
+            initializers[i].init.apply(this, arguments);
+            initializers[i].init.apply(parent, arguments);
+            
+            Entity.Model.extend(initializers[i], initializers[i + 1]);
+          }
+
+          this.base = function() {
+            Entity.Model.extend(this.base, parent);
+          };
+        }
+       return this.init.apply(this, arguments);
+      }
+      //
+    },
     create: function() {
       protoType = arguments[0];
       var object = Entity.Model.factory();
@@ -43,15 +80,25 @@
         object.prototype.$_parent = protoType.extend.prototype;
         Entity.Model.extend(object.prototype, protoType.extend.prototype);
       } else {
-        object.prototype.$_parent = {init: function(){}};
+        object.prototype.$_parent = getEntityBase();
+        Entity.Model.extend(object.prototype, object.prototype.$_parent);
       }
       
       Entity.Model.extend(object.prototype, protoType);
       
       return object;
     },
-
+    clone : function(obj) {
+      if(obj == null || typeof(obj) != 'object')
+        return obj;
+      var temp = {}; 
+      for(var key in obj) {
+        temp[key] = Entity.Model.clone(obj[key]);
+      }
+      return temp;
+    },
     extend: function(object, args) {
+      
       for (var method in args) {
         if(method != 'constructor' && method != '$_parent') {
           object[method] = args[method];
@@ -66,7 +113,7 @@
       } else  {
         return parent.call(this);
       }
-    }
+    },
   };
 
   Entity.Enumerable = {
