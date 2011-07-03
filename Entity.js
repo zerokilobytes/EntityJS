@@ -11,13 +11,13 @@
   
   function getEntityBase() {
     return {
+      cname: 'EntityBase',
       extend: {},
       
       init : function () {
 			},
       
       base: function(){
-        console.log('Base ready >>>');
         return this;
       }
     }
@@ -34,36 +34,13 @@
       return function() {
         var parent = this.$_parent;
         var current  = this;
-        //this.$_parent = null;
         
-        if( Entity.Type.isSet(this ) ) {
-          initStack = function(object, collection)
-            {
-              if(hasOwnProperty(object,'$_parent')) {
-                collection.push(object['$_parent']);
-                initStack(object['$_parent'], collection);
-              }
-              return;
-          };
-            
-          initializers = [];
-          initStack(this, initializers);
-
-          var len = initializers.length;
-          for(var i=0; i<len; i++) {
-            initializers[i].init.apply(this, arguments);
-            initializers[i].init.apply(parent, arguments);
-            
-            Entity.Model.extend(initializers[i], initializers[i + 1]);
-          }
-
+        this.$_parent.init.apply(this, arguments);
           this.base = function() {
-            Entity.Model.extend(this.base, parent);
+            Entity.Model.extend(this.$_parent, this);
           };
+          this.init.apply(this, arguments);
         }
-       return this.init.apply(this, arguments);
-      }
-      //
     },
     create: function() {
       protoType = arguments[0];
@@ -88,6 +65,7 @@
       
       return object;
     },
+    
     clone : function(obj) {
       if(obj == null || typeof(obj) != 'object')
         return obj;
@@ -118,14 +96,14 @@
 
   Entity.Enumerable = {
     toArray: function(args) {
-	  var length = args.length;
-	  var result = new Array(length);
+      var length = args.length;
+      var result = new Array(length);
 
-	  for( var i = 0; i < length; i++ ) {
-	    result[i] = args[i];
-	  }
-	  return result;
-	}
+      for( var i = 0; i < length; i++ ) {
+        result[i] = args[i];
+      }
+      return result;
+    }
   };
 
   Entity.Type = {
@@ -133,7 +111,7 @@
        return typeof object !== "undefined" && object !== null;
 	},
 	typeName: function(object) {
-       return typeof object;
+    return typeof object;
 	}
   };
 

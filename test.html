@@ -11,15 +11,15 @@
 
 		LivingThing = $e({
       cname: 'LivingThing',
-      init : function (first_name) {
-        this.base();
+      init : function (first_name, last_name) {
         this.first_name = first_name;
+        this.last_name = last_name;
 			},
 			play : function () {
 			  console.log(this.first_name + ' played from Class LivingThing');
 			},
       doSomething: function() {
-        console.log(this.first_name + ' did something from Class LivingThing');
+        console.log(this.first_name + ' did something in Class LivingThing');
       }
     });
 
@@ -27,11 +27,10 @@
       cname: 'Person',
       extend: LivingThing,
       init : function (first_name, last_name) {
-        this.base(first_name);
 				this.last_name = last_name;
+        this.first_name = first_name;
 			},
 			play : function () {
-			  this.base.play();
 			  console.log(this.first_name + ' played from Class Person');
 			}
     });
@@ -42,26 +41,26 @@
     
     ////return;
      
-		/*person = new Person('Bob', 'Clay');
+		person = new Person('Bob', 'Clay');
 
 		console.log('value of first name is ' + person.first_name);
-    console.log('value of last name is ' + person.last_name);
+    console.log('value of last name is -' + person.last_name);
 
 		person.play();
     person.doSomething();
-    */
+    
     
     
     Programmer = $e({
       cname: 'Programmer',
       extend: Person,
       init : function (first_name, last_name) {
-        console.log('Programmer');
-        this.base(first_name);
+        this.first_name = first_name;
 				this.last_name = last_name;
 			},
 			play : function () {
-			  this.base.play();
+        
+			  //this.base.play();
 			  console.log(this.first_name + ' played from Class Programmer');
 			}
     });
