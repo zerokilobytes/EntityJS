@@ -55,12 +55,10 @@
       cname: 'Programmer',
       extend: Person,
       init : function (first_name, last_name) {
-        this.first_name = first_name;
-				this.last_name = last_name;
+        this.base().init.apply(this, arguments);
 			},
 			play : function () {
-        
-			  //this.base.play();
+			  this.base().play();
 			  console.log(this.first_name + ' played from Class Programmer');
 			}
     });

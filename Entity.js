@@ -35,12 +35,12 @@
         var parent = this.$_parent;
         var current  = this;
         
-        this.$_parent.init.apply(this, arguments);
-          this.base = function() {
-            Entity.Model.extend(this.$_parent, this);
-          };
-          this.init.apply(this, arguments);
-        }
+        this.base = function() {
+          return this.$_parent;
+        };
+
+        this.init.apply(this, arguments);
+      }
     },
     create: function() {
       protoType = arguments[0];
