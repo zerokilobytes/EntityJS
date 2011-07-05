@@ -19,10 +19,6 @@
       
       init : function () {
 			},
-      
-      base: function(){
-        return this;
-      }
     }
   }
   
