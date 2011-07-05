@@ -8,6 +8,9 @@
   function Entity() {
     return Entity.Model.create(arguments[0]);
   }
+  var ENTITY_TYPE_ALL = 'ENTITY_TYPE_ALL';
+  var ENTITY_TYPE_PROPERTY = 'ENTITY_TYPE_PROPERTY';
+  var ENTITY_TYPE_METHOD = 'ENTITY_TYPE_METHOD';
   
   function getEntityBase() {
     return {
@@ -32,13 +35,6 @@
   Entity.Model = {
     factory: function() {
       return function() {
-        var parent = this.$_parent;
-        var current  = this;
-        
-        this.base = function() {
-          return this.$_parent;
-        };
-
         this.init.apply(this, arguments);
       }
     },
@@ -54,14 +50,14 @@
       }
 
       if( Entity.Type.isSet(protoType.extend) ) {
-        object.prototype.$_parent = protoType.extend.prototype;
-        Entity.Model.extend(object.prototype, protoType.extend.prototype);
+        object.prototype.$super = protoType.extend.prototype;
+        Entity.Model.extend(object.prototype, protoType.extend.prototype, ENTITY_TYPE_ALL);
       } else {
-        object.prototype.$_parent = getEntityBase();
-        Entity.Model.extend(object.prototype, object.prototype.$_parent);
+        object.prototype.$super = getEntityBase();
+        Entity.Model.extend(object.prototype, object.prototype.$super, ENTITY_TYPE_ALL);
       }
       
-      Entity.Model.extend(object.prototype, protoType);
+      Entity.Model.extend(object.prototype, protoType, ENTITY_TYPE_ALL);
       
       return object;
     },
@@ -75,11 +71,19 @@
       }
       return temp;
     },
-    extend: function(object, args) {
+    extend: function(object, args, type) {
       
       for (var method in args) {
-        if(method != 'constructor' && method != '$_parent') {
-          object[method] = args[method];
+        if(method != 'constructor' && method != '$super' && method != 'extend') {
+          if(type == ENTITY_TYPE_ALL) {
+            object[method] = args[method];
+          }
+          else if(type == ENTITY_TYPE_METHOD && (typeof args[method] == 'function')) {
+            object[method] = args[method];
+          }
+          else if(type == ENTITY_TYPE_PROPERTY && (typeof args[method] != 'function')) {
+            object[method] = args[method];
+          }
         }
       }
       return object.prototype;

@@ -8,7 +8,6 @@
   <script type="text/javascript">
 
 	function test1(){
-
 		LivingThing = $e({
       cname: 'LivingThing',
       init : function (first_name, last_name) {
@@ -27,8 +26,8 @@
       cname: 'Person',
       extend: LivingThing,
       init : function (first_name, last_name) {
-				this.last_name = last_name;
-        this.first_name = first_name;
+				this.first_name = first_name;
+        this.last_name = last_name;
 			},
 			play : function () {
 			  console.log(this.first_name + ' played from Class Person');
@@ -55,10 +54,10 @@
       cname: 'Programmer',
       extend: Person,
       init : function (first_name, last_name) {
-        this.base().init.apply(this, arguments);
+        this.first_name = first_name;
+        this.last_name = last_name;
 			},
 			play : function () {
-			  this.base().play();
 			  console.log(this.first_name + ' played from Class Programmer');
 			}
     });
