@@ -11,20 +11,17 @@
   var ENTITY_TYPE_ALL = 'ENTITY_TYPE_ALL';
   var ENTITY_TYPE_PROPERTY = 'ENTITY_TYPE_PROPERTY';
   var ENTITY_TYPE_METHOD = 'ENTITY_TYPE_METHOD';
-  
+
   function getEntityBase() {
     return {
-      cname: 'EntityBase',
       extend: {},
-      
-      init : function () {
-			},
+      init : function () {},
     }
   }
-  
+
   function hasOwnProperty(obj, prop){
     return (typeof(obj[prop]) !== 'undefined');
-    }
+  }
 
   Entity.VERSION = '1.0';
 
@@ -52,12 +49,12 @@
         object.prototype.$super = getEntityBase();
         Entity.Model.extend(object.prototype, object.prototype.$super, ENTITY_TYPE_ALL);
       }
-      
+
       Entity.Model.extend(object.prototype, protoType, ENTITY_TYPE_ALL);
-      
+
       return object;
     },
-    
+
     clone : function(obj) {
       if(obj == null || typeof(obj) != 'object')
         return obj;
@@ -68,7 +65,6 @@
       return temp;
     },
     extend: function(object, args, type) {
-      
       for (var method in args) {
         if(method != 'constructor' && method != '$super' && method != 'extend') {
           if(type == ENTITY_TYPE_ALL) {
@@ -83,14 +79,6 @@
         }
       }
       return object.prototype;
-    },
-
-    apply: function(parent) {
-      if( arguments.length > 1 )  {
-        return parent.prototype.init.apply( this, Array.prototype.slice.call( arguments, 1 ) );
-      } else  {
-        return parent.call(this);
-      }
     },
   };
 
@@ -109,10 +97,11 @@
   Entity.Type = {
     isSet: function(object) {
        return typeof object !== "undefined" && object !== null;
-	},
-	typeName: function(object) {
-    return typeof object;
-	}
+    },
+
+    typeName: function(object) {
+      return typeof object;
+    }
   };
 
   if(!window.$e){window.$e=Entity;}

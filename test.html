@@ -10,9 +10,11 @@
 	function test1(){
 		LivingThing = $e({
       cname: 'LivingThing',
+      isAlive: true,
       init : function (first_name, last_name) {
         this.first_name = first_name;
         this.last_name = last_name;
+        this.isAlive = true;
 			},
 			play : function () {
 			  console.log(this.first_name + ' played from Class LivingThing');
@@ -64,6 +66,7 @@
 
 		console.log('value of first name is ' + programmer.first_name);
     console.log('value of last name is ' + programmer.last_name);
+    console.log('value of isAlive is ' + programmer.isAlive);
 
 		programmer.play();
     programmer.doSomething();
