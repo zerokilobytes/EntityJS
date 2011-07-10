@@ -11,6 +11,17 @@
   var ENTITY_TYPE_ALL = 'ENTITY_TYPE_ALL';
   var ENTITY_TYPE_PROPERTY = 'ENTITY_TYPE_PROPERTY';
   var ENTITY_TYPE_METHOD = 'ENTITY_TYPE_METHOD';
+  
+  var slice = Array.prototype.slice;
+  
+  Array.prototype.forEach = Array.prototype.forEach || function(callback, context) {
+    len = this.length || 0;
+    for(var i = 0; i < len; i++) {
+      if(i in this) {
+        callback.call(context, this[i], i, this);
+      }
+    }
+  }
 
   function getEntityBase() {
     return {
@@ -91,6 +102,17 @@
         result[i] = args[i];
       }
       return result;
+    },
+    
+    map: function(enumerable, callback) {
+      for(var i = 0; i < enumerable.length; i++) {
+        enumerable[i] = callback(enumerable[i]);
+      }
+      return enumerable;
+    },
+    
+    isArray: function(object) {
+      return Object.prototype.toString.call(object) === "[object Array]";
     }
   };
 
@@ -101,7 +123,14 @@
 
     typeName: function(object) {
       return typeof object;
+    },
+    
+    isNumeric: function(object) {
+      return !!(!isNaN(object));
     }
+  };
+  
+  Entity.Func = {
   };
 
   if(!window.$e){window.$e=Entity;}
