@@ -73,15 +73,29 @@
     
 	}
   </script>
+  
+   <script>
+    function test2(){
+      numbers = [1,2,3];
+
+      function printElt(element, index, array) {
+      alert("[" + index + "] is " + element);
+      }
+      
+    
+    numbers.forEach(printElt);
+
+       console.log(numbers[2]);
+      }
+    </script>
   <style>
   #box {
-    width: 100px;
-    height: 100px;
+    width: 100px; 
     background-color: red;
   }
   </style>
 </head>
-<body onload = "test1()">
+<body onload = "test2()">
   
 </body>
 </html>
