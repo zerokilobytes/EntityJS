@@ -8,13 +8,17 @@
   function Entity() {
     return Entity.Model.create(arguments[0]);
   }
-  var ENTITY_TYPE_ALL = 'ENTITY_TYPE_ALL';
-  var ENTITY_TYPE_PROPERTY = 'ENTITY_TYPE_PROPERTY';
-  var ENTITY_TYPE_METHOD = 'ENTITY_TYPE_METHOD';
+  var ENTITY_TYPE_ALL = '1';
+  var ENTITY_TYPE_PROPERTY = '2';
+  var ENTITY_TYPE_METHOD = '3';
   
   var slice = Array.prototype.slice;
   
   Array.prototype.forEach = Array.prototype.forEach || function(callback, context) {
+    if(typeof callback != "function") {
+      throw new TypeError();
+    }
+
     len = this.length || 0;
     for(var i = 0; i < len; i++) {
       if(i in this) {
@@ -33,18 +37,25 @@
   function hasOwnProperty(obj, prop){
     return (typeof(obj[prop]) !== 'undefined');
   }
+  
+  function extend(destination, source) {
+    for (var property in source)
+      destination[property] = source[property];
+    return destination;
+  }
 
   Entity.VERSION = '1.0';
 
-  Entity.Model = {
-    factory: function() {
+  Entity.Model = (function(){
+    function factory() {
       return function() {
         this.init.apply(this, arguments);
       }
-    },
-    create: function() {
+    }
+
+    function create() {
       protoType = arguments[0];
-      var object = Entity.Model.factory();
+      var object = factory();
 
       object.prototype = {};
       object.prototype.constructor = object;
@@ -55,27 +66,28 @@
 
       if( Entity.Type.isSet(protoType.extend) ) {
         object.prototype.$super = protoType.extend.prototype;
-        Entity.Model.extend(object.prototype, protoType.extend.prototype, ENTITY_TYPE_ALL);
+        extend(object.prototype, protoType.extend.prototype, ENTITY_TYPE_ALL);
       } else {
         object.prototype.$super = getEntityBase();
-        Entity.Model.extend(object.prototype, object.prototype.$super, ENTITY_TYPE_ALL);
+        extend(object.prototype, object.prototype.$super, ENTITY_TYPE_ALL);
       }
 
-      Entity.Model.extend(object.prototype, protoType, ENTITY_TYPE_ALL);
+      extend(object.prototype, protoType, ENTITY_TYPE_ALL);
 
       return object;
-    },
+    }
 
-    clone : function(obj) {
+    function clone(obj) {
       if(obj == null || typeof(obj) != 'object')
         return obj;
       var temp = {}; 
       for(var key in obj) {
-        temp[key] = Entity.Model.clone(obj[key]);
+        temp[key] = clone(obj[key]);
       }
       return temp;
-    },
-    extend: function(object, args, type) {
+    }
+
+    function extend(object, args, type) {
       for (var method in args) {
         if(method != 'constructor' && method != '$super' && method != 'extend') {
           if(type == ENTITY_TYPE_ALL) {
@@ -90,11 +102,15 @@
         }
       }
       return object.prototype;
-    },
-  };
+    }
+    
+    return {
+      create: create
+    };
+  })();
 
-  Entity.Enumerable = {
-    toArray: function(args) {
+  Entity.Enumerable = (function(){
+    function toArray(args) {
       var length = args.length;
       var result = new Array(length);
 
@@ -102,19 +118,25 @@
         result[i] = args[i];
       }
       return result;
-    },
+    }
     
-    map: function(enumerable, callback) {
+    function map(enumerable, callback) {
       for(var i = 0; i < enumerable.length; i++) {
         enumerable[i] = callback(enumerable[i]);
       }
       return enumerable;
-    },
+    }
     
-    isArray: function(object) {
+    function isArray(object) {
       return Object.prototype.toString.call(object) === "[object Array]";
     }
-  };
+
+    return {
+      toArray:  toArray,
+      map:      map,
+      isArray:  isArray
+    };
+  })();
 
   Entity.Type = {
     isSet: function(object) {
