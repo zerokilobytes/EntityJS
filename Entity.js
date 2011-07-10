@@ -131,6 +131,7 @@
   };
   
   Entity.Func = {
+  
   };
 
   if(!window.$e){window.$e=Entity;}
