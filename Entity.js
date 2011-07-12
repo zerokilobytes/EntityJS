@@ -14,6 +14,7 @@
   
   var slice = Array.prototype.slice;
   
+  //MDN
   Array.prototype.forEach = Array.prototype.forEach || function(callback, context) {
     typeCheck(callback, "function");
     var len = this.length || 0;
@@ -24,6 +25,7 @@
     }
   }
   
+  //MDN
   Array.prototype.filter = Array.prototype.filter || function(callback, context) {
     typeCheck(callback, "function");
     var result = [];
@@ -40,10 +42,12 @@
     return this.slice(0);
   }
   
+  //MDN
   Array.isArray = Array.isArray || function(object) {
     return Object.prototype.toString.call(object) === "[object Array]";
   }
   
+  //MDN
   Array.prototype.every = Array.prototype.every || function(callback, object) {
 	  typeCheck(callback, "function");
     var len = this.length || 0;
@@ -55,6 +59,7 @@
     }
   }
   
+  //MDN
   Array.prototype.indexOf = Array.prototype.indexOf || function(target, start) {
     var len = this.length || 0;
     start = start || 0;
