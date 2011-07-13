@@ -11,9 +11,9 @@
   var ENTITY_TYPE_ALL = '1';
   var ENTITY_TYPE_PROPERTY = '2';
   var ENTITY_TYPE_METHOD = '3';
-  
+
   var slice = Array.prototype.slice;
-  
+
   //MDN
   Array.prototype.forEach = Array.prototype.forEach || function(callback, context) {
     typeCheck(callback, "function");
@@ -24,7 +24,7 @@
       }
     }
   }
-  
+
   //MDN
   Array.prototype.filter = Array.prototype.filter || function(callback, context) {
     typeCheck(callback, "function");
@@ -37,7 +37,7 @@
     }
     return result;
   }
-  
+
   Array.prototype.clone = function() {
     return this.slice(0);
   }
@@ -46,7 +46,7 @@
   Array.isArray = Array.isArray || function(object) {
     return Object.prototype.toString.call(object) === "[object Array]";
   }
-  
+
   //MDN
   Array.prototype.every = Array.prototype.every || function(callback, object) {
 	  typeCheck(callback, "function");
@@ -58,7 +58,7 @@
     return true;
     }
   }
-  
+
   //MDN
   Array.prototype.indexOf = Array.prototype.indexOf || function(target, start) {
     var len = this.length || 0;
@@ -70,7 +70,7 @@
         return start;
     return -1;
   }
-  
+
   //jPaq
   Array.prototype.subtract = function(arrOther) {
     if(!(arrOther instanceof Array))
@@ -88,21 +88,34 @@
     }
     return difference;
   }
-  
+
   //jPaq
   Array.prototype.intersect = function(arrOther) {
     if(!(arrOther instanceof Array))
       return [];
     return this.subtract(this.subtract(arrOther));
   }
-  
+
   //jPaq
   Array.prototype.union = function(arrOther) {
     if(!(arrOther instanceof Array))
       return [];
     return this.concat(arrOther.subtract(this));
   };
-  
+
+  //MDN
+  Object.keys = Object.keys || function(obj) {
+    if (obj !== Object(obj))
+      throw new TypeError('Object.keys called on non-object');
+    var result = [];
+    var property;
+    for(property in obj) {
+      if(Object.prototype.hasOwnProperty.call(obj, property))
+        result.push(property);
+    }
+    return result;
+  }
+
   function typeCheck(value, type) {
     if(typeof value != type) {
       throw new TypeError();
@@ -119,7 +132,7 @@
   function hasOwnProperty(obj, prop){
     return (typeof(obj[prop]) !== 'undefined');
   }
-  
+
   /**
    * Applies the proprties of one object to another
    *
@@ -133,7 +146,7 @@
       destination[property] = source[property];
     return destination;
   }
-  
+
   Entity.VERSION = '1.0';
 
   Entity.Model = (function(){
@@ -161,7 +174,7 @@
       extend(object.prototype, protoType, ENTITY_TYPE_ALL);
       return object;
     }
-    
+
   /**
    * Clone a model
    *
@@ -195,7 +208,15 @@
       }
       return object.prototype;
     }
-    
+
+    function _properties() {
+      //ToDO: Implement
+    }
+
+    function _methods() {
+      //ToDO: Implement
+    }
+
     return {
       create: create
     };
@@ -220,7 +241,7 @@
       }
       return enumerable;
     }
-    
+
     function isArray(object) {
       return Array.isArray(object);
     }
@@ -244,21 +265,20 @@
     function isNumeric(object) {
       return !!(!isNaN(object));
     }
-    
-    
+
     extend(Entity, {
       isSet:      isSet,
       typeName:   typeName,
       isNumeric:  isNumeric
     });
-    
+
     return {
       isSet:      isSet,
       typeName:   typeName,
       isNumeric:  isNumeric
     };
   })();
-  
+
   Entity.Func = (function(){
     function clone(object) {
       if(typeof(object) != 'object' || typeof(object) !='function' || Array.isArray(object))
@@ -269,6 +289,7 @@
       }
       return temp;
     }
+
     extend(Entity, {
       clone: clone
     });
@@ -276,7 +297,7 @@
     clone: clone
     };
   })();
-  
+
   Entity.Dom = (function(){
     nodeType = {
       ELEMENT:                  1,
@@ -292,68 +313,68 @@
       DOCUMENT_FRAGMENT:        11,
       NOTATION:                 12
     };
-    
+
     function addClass(element, className) {
       //TODO: Implement
     }
-    
+
     function removeClass(element, className) {
       //TODO: Implement
     }
-    
+
     function clearClasses(element, className) {
       //TODO: Implement
     }
-    
+
     function hasClass(element, className) {
       //TODO: Implement
     }
-    
+
     function replaceClass(element, oldClass, newClass) {
       //TODO: Implement
     }
-    
+
     function getClassNames(element) {
       //TODO: Implement
     }
-    
+
     function getAttribute(element, attribute) {
       //TODO: Implement
     }
-    
+
     function setAttribute(element, name, value) {
       //TODO: Implement
     }
-    
+
     function removeAttribute(element, name) {
       //TODO: Implement
     }
-    
+
     Dom = {
       elements: [],
       selector: null,
       
       css: function() {
       },
-      
+
       first: function() {
       },
-      
+
       last: function() {
       },
-      
+
       html: function() {
       },
-      
+
       text: function() {
       },
-      
+
       addClass: function(className) {
       },
-      
+
       removeClass: function(className) {
       },
-      
+
       /**
        * Get or set an attribute.
        *
@@ -366,5 +387,5 @@
     }
   })();
 
-  if(!window.$e){window.$e=Entity;window.Entity=Entity;}
+  if(!window.$e || !window.Entity){window.$e=Entity;window.Entity=Entity;}
 })(window);
