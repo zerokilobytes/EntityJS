@@ -4,8 +4,8 @@
  * GNU General Public Version 2 License
  */
 
-(function(){
-  function Entity() {
+(function(window){
+  var Entity = function() {
     return Entity.Model.create(arguments[0]);
   }
   var ENTITY_TYPE_ALL = '1';
@@ -503,5 +503,6 @@
 
   })();
 
-  if(!window.$e){window.$e=Entity;window.Entity=Entity;}
+  if(!window.$e || !window.Entity){window.$e=Entity;window.Entity=Entity;}
+
 })(window);
