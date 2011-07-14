@@ -72,10 +72,10 @@
   </script>
   
    <script>
+   $e.Event.ready(function(){alert('Ready');});
     function test2(){
-    console.log([1,'2s'].clear());
-      //console.log($e.clone({set:[1,2,3], name: 'developer', type: 'proto', struct: {t1:function(){return 'Foo'}, t2: 'Cannon', t3: ['a','b', 'c']}}));
-      }
+      
+    }
     </script>
   <style>
   #box {
@@ -85,6 +85,6 @@
   </style>
 </head>
 <body onload = "test2()">
-  
+  <div id="example"></div>
 </body>
 </html>

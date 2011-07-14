@@ -245,6 +245,11 @@
   }
 
   Entity.VERSION = '1.0';
+  
+  Browser = {
+    Mozilla: (navigator.userAgent.indexOf('Mozilla') > -1),
+    IE: ((navigator.appName.indexOf('Microsoft Internet Explorer')> -1) || (navigator.appVersion.indexOf('MSIE') > -1))
+  }
 
   Entity.Model = (function(){
     function factory() {
@@ -412,8 +417,20 @@
     var DOMReadyCallbacks = [];
     var isReady           = false;
     var events = {};
-    
-    function onReady() {
+
+    function _domLoadedListner() {
+      if (Browser.Mozilla) {
+        document.removeEventListener('DOMContentLoaded', _domLoadedListner, false);
+        _ready();
+      } else if (Browser.IE) {
+        if (document.readyState === 'complete') {
+          document.detachEvent('onreadystatechange', _domLoadedListner);
+          _ready();
+        }
+      }
+    }
+
+    function _ready() {
       if (!isReady) {
         isReady = true;
         for (var i in DOMReadyCallbacks) {
@@ -422,20 +439,16 @@
         DOMReadyCallbacks.clear();
       }
     }
-    
-    function bind() {
+
+    function _initReady() {
       if (!isReady)
         isReady = true;
 
-      if (document.readyState === 'complete') {
-        onReady();
-      } else if (document.addEventListener) {
-        document.addEventListener('DOMContentLoaded', DOMContentLoaded, false );
-        window.addEventListener('load', onReady, false);
-      } else if (document.attachEvent) {
-        document.attachEvent('onreadystatechange', DOMContentLoaded);
-
-        window.attachEvent('onload', onReady);
+      if (Browser.Mozilla) {
+        document.addEventListener('DOMContentLoaded', _domLoadedListner, false);
+      } else if(Browser.IE) {
+        document.onreadystatechange = _domLoadedListner;
+        window.onload = _ready;
       }
     }
     
@@ -452,6 +465,7 @@
     
     events = {
       ready: function(callback) {
+        _initReady();
         DOMReadyCallbacks.push(callback);
       },
       
@@ -464,9 +478,14 @@
       remove: function(event) {
       },
     }
+    
+    return {
+      ready:      events.ready
+    };
+    
   })();
-  
-  window.Entity = window.Entity || Entity;
+
+  window.Entity = Entity;
   window.$e = window.$e || Entity;
 
 })(window);
