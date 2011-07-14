@@ -485,7 +485,5 @@
     
   })();
 
-  window.Entity = Entity;
-  window.$e = window.$e || Entity;
-
+  if(!window.$e){window.$e=Entity;window.Entity=Entity;}
 })(window);
