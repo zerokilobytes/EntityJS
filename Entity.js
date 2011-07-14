@@ -118,7 +118,7 @@
 
   function typeCheck(value, type) {
     if(typeof value != type) {
-      throw new TypeError();
+      throw new TypeError('Invalid type');
     }
   }
 
