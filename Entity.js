@@ -450,8 +450,15 @@
         window.onload = _ready;
       }
     }
+    
+    function _setHandler(element, callback){
+      return function(){
+        callback.call(element, window.event);
+      }
+    }
 
     function start() {
+      //TODO: Implement
     }
 
     function stop(event) {
@@ -460,6 +467,7 @@
     }
 
     function stopObserve() {
+      //TODO: Implement
     }
 
     events = {
@@ -469,7 +477,7 @@
       },
 
       fire: function(element, event) {
-        if (document.createEventObject){
+        if (document.createEventObject) {
           var eventObject = document.createEventObject();
           return element.fireEvent('on' + event, eventObject)
         } else {
@@ -479,21 +487,21 @@
         }
       },
 
-      add: function(element, type, callback) {
+      add: function(element, event, callback) {
         if(element.attachEvent) {
-          element[type+callback] = function(){callback.call(element, window.event);}
-          element.attachEvent( 'on' + type, element[type + callback] );
+          element[event + callback] = _setHandler(element, callback);
+          element.attachEvent('on' + event, element[event + callback]);
         } else {
-          element.addEventListener( type, callback, false );
+          element.addEventListener(event, callback, false);
         }
       },
 
-      remove: function(element, type, callback) {
+      remove: function(element, event, callback) {
         if(element.detachEvent) {
-          element.detachEvent('on' + type, element[type + callback]);
-          element[type+callback] = null;
+          element.detachEvent('on' + event, element[event + callback]);
+          element[event + callback] = null;
         } else {
-          element.removeEventListener( type, callback, false );
+          element.removeEventListener(event, callback, false);
         }
       },
     }
@@ -501,6 +509,14 @@
     elements = {
       fire: function(event) {
         events.fire(this, event);
+      },
+
+      add: function(event, callback) {
+        events.add(this, event, callback);
+      },
+
+      remove: function(event, callback) {
+        events.remove(this, event, callback);
       }
     }
 
@@ -510,8 +526,8 @@
 
     return {
       ready:  events.ready,
-      fire: events.fire,
-      add: events.add
+      fire:   events.fire,
+      add:    events.add
     };
 
   })();
