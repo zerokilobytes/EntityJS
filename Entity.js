@@ -14,7 +14,13 @@
 
   var slice = Array.prototype.slice;
 
-  //MDN
+  /**
+   * The MDN implementation of the array foreach function
+   *
+   * @param {Object} callback The function that will be called for the iteration of each item of the array.
+   * @param {Object} context The scope to which the 'this' object will be referenced to.
+   * @returns {Void}
+   */
   Array.prototype.forEach = Array.prototype.forEach || function(callback, context) {
     typeCheck(callback, "function");
     var len = this.length || 0;
@@ -25,7 +31,13 @@
     }
   }
 
-  //MDN
+  /**
+   * The MDN implementation of the array filter function
+   *
+   * @param {Object} callback The function that will be called for the iteration of each item of the array.
+   * @param {Object} context The scope to which the 'this' object will be referenced to.
+   * @returns {Array}
+   */
   Array.prototype.filter = Array.prototype.filter || function(callback, context) {
     typeCheck(callback, "function");
     var result = [];
@@ -37,17 +49,24 @@
     }
     return result;
   }
-
-  Array.prototype.clone = function() {
-    return this.slice(0);
-  }
   
-  //MDN
+  /**
+   * The MDN implementation of the array isArray function
+   *
+   * @param {Object} object The object to be checked.
+   * @returns {Boolean}
+   */
   Array.isArray = Array.isArray || function(object) {
     return Object.prototype.toString.call(object) === "[object Array]";
   }
 
-  //MDN
+  /**
+   * The MDN implementation of the array every function
+   *
+   * @param {Object} callback The function that will be called for the iteration of each item of the array.
+   * @param {Object} context The scope to which the 'this' object will be referenced to.
+   * @returns {Boolean}
+   */
   Array.prototype.every = Array.prototype.every || function(callback, object) {
 	  typeCheck(callback, "function");
     var len = this.length || 0;
@@ -59,7 +78,15 @@
     }
   }
 
-  //MDN
+  /**
+   * The MDN implementation of the array indexOf function
+   *
+   * @param {Number} target The element to locate within the array.
+   * @param {Number} start The index to start the search at.
+   * If this number is negative, it is taken as the offset from the end of the array.
+   * If omitted, this value defaults to zero.
+   * @return {Number}
+   */
   Array.prototype.indexOf = Array.prototype.indexOf || function(target, start) {
     var len = this.length || 0;
     start = start || 0;
@@ -71,7 +98,14 @@
     return -1;
   }
 
-  //jPaq
+  /**
+   * The JPAQ implementation of the array subtract function.
+   *
+   * Returns all elements that are in this array but not in arrOther.
+   *
+   * @param {Object} arrOther The array whose elements will not be found in the returned array.
+   * @return {Array}
+   */
   Array.prototype.subtract = function(arrOther) {
     if(!(arrOther instanceof Array))
       return [];
@@ -89,21 +123,55 @@
     return difference;
   }
 
-  //jPaq
+  /**
+   * The JPAQ implementation of the array intersect function.
+   *
+   * Returns all elements that are common to this array and arrOther.
+   *
+   * @param {Object} arrOther The array that will be intersected with the current one.
+   * @returns {Array}
+   */
   Array.prototype.intersect = function(arrOther) {
     if(!(arrOther instanceof Array))
       return [];
     return this.subtract(this.subtract(arrOther));
   }
 
-  //jPaq
+  /**
+   * The JPAQ implementation of the array union function.
+   *
+   * Gets a new array which contains all of the elements that are in this
+	 * array and the other one.  Any elements found in the other array that are
+	 * already in this one will not be added to this array.
+   *
+   * @param {Object} arrOther The array that will be unioned with this array.
+   * @returns {Array}
+   */
   Array.prototype.union = function(arrOther) {
     if(!(arrOther instanceof Array))
       return [];
     return this.concat(arrOther.subtract(this));
   };
+  
+  /**
+   * The JPAQ implementation of the array union function.
+   * Creates a shallow copy of this array.
+   *
+   * @param {Object} arrOther The array that will be unioned with this array.
+   * @returns {Array}
+   */
+  Array.prototype.clone = function() {
+    return this.slice(0);
+  }
 
-  //MDN
+  /**
+   * The MDN implementation of the Object keys function
+   *
+   * Returns all the key values found in an object.
+   *
+   * @param {Number} target The element to locate within the array.
+   * @returns {Array}
+   */
   Object.keys = Object.keys || function(obj) {
     if (obj !== Object(obj))
       throw new TypeError('Object.keys called on non-object');
@@ -115,20 +183,39 @@
     }
     return result;
   }
-
+  
+  /**
+   * Checks if a value is of the type supplied.
+   * Throws a TypeError exception if value is not of the type supplied.
+   *
+   * @param {Object} value The object to type-check.
+   * @param {String} type The type to check against.
+   * @returns {Void}
+   */
   function typeCheck(value, type) {
     if(typeof value != type) {
       throw new TypeError('Invalid type');
     }
   }
-
+  
+  /**
+   * Returns the base class of Entity objects
+   * Throws a TypeError exception if value is not of the type supplied.
+   
+   * @returns {Object}
+   */
   function getEntityBase() {
     return {
       extend: {},
       init : function () {},
     }
   }
-
+  
+  /**
+   * Checks is an object has a property defined
+   *
+   * @returns {Boolean}
+   */
   function hasOwnProperty(obj, prop){
     return (typeof(obj[prop]) !== 'undefined');
   }
@@ -155,7 +242,12 @@
         this.init.apply(this, arguments);
       }
     }
-
+    
+    /**
+     * Creates a model using 'arguments'.
+     *
+     * @returns {Object} The new model
+     */
     function create() {
       protoType = arguments[0];
       var object = factory();
@@ -175,12 +267,12 @@
       return object;
     }
 
-  /**
-   * Clone a model
-   *
-   * @param {Object} context The object that this will be referenced to.
-   * @returns {Object} The cloned model
-   */
+    /**
+     * Clones a model using the deep copy technique.
+     *
+     * @param {Object} context The object that this will be referenced to.
+     * @returns {Object} The cloned model
+     */
     function clone(context) {
       var object = context || this;
       if(typeof(object) != 'object')
@@ -191,7 +283,15 @@
       }
       return temp;
     }
-
+    
+    /**
+     * Extend a model properties from a list of arguments.
+     *
+     * @param {Object} object object to extend arguments to.
+     * @param {Array} args arguments to add to object.
+     * @param {String} type The of properties to extend ie. (Function, mehod, all).
+     * @returns {Object} The extended model.
+     */
     function extend(object, args, type) {
       for (var method in args) {
         if(method != 'constructor' && method != '$super' && method != 'extend') {
@@ -210,11 +310,11 @@
     }
 
     function _properties() {
-      //ToDO: Implement
+      //TODO: Implement
     }
 
     function _methods() {
-      //ToDO: Implement
+      //TODO: Implement
     }
 
     return {
@@ -296,95 +396,6 @@
     return {
     clone: clone
     };
-  })();
-
-  Entity.Dom = (function(){
-    nodeType = {
-      ELEMENT:                  1,
-      ATTRIBUTE:                2,
-      TEXT:                     3,
-      CDATA_SECTION:            4,
-      ENTITY_REFERENCE:         5,
-      ENTITY:                   6,
-      PROCESSING_INSTRUCTION:   7,
-      COMMENT:                  8,
-      DOCUMENT:                 9,
-      DOCUMENT_TYPE:            10,
-      DOCUMENT_FRAGMENT:        11,
-      NOTATION:                 12
-    };
-
-    function addClass(element, className) {
-      //TODO: Implement
-    }
-
-    function removeClass(element, className) {
-      //TODO: Implement
-    }
-
-    function clearClasses(element, className) {
-      //TODO: Implement
-    }
-
-    function hasClass(element, className) {
-      //TODO: Implement
-    }
-
-    function replaceClass(element, oldClass, newClass) {
-      //TODO: Implement
-    }
-
-    function getClassNames(element) {
-      //TODO: Implement
-    }
-
-    function getAttribute(element, attribute) {
-      //TODO: Implement
-    }
-
-    function setAttribute(element, name, value) {
-      //TODO: Implement
-    }
-
-    function removeAttribute(element, name) {
-      //TODO: Implement
-    }
-
-    Dom = {
-      elements: [],
-      selector: null,
-      
-      css: function() {
-      },
-
-      first: function() {
-      },
-
-      last: function() {
-      },
-
-      html: function() {
-      },
-
-      text: function() {
-      },
-
-      addClass: function(className) {
-      },
-
-      removeClass: function(className) {
-      },
-
-      /**
-       * Get or set an attribute.
-       *
-       * @param {String} attribute The attribute name
-       * @param {String} value The attribute value
-       * @returns {String} The attribute value
-       */
-      attr: function(attribute, value) {
-      },
-    }
   })();
 
   if(!window.$e || !window.Entity){window.$e=Entity;window.Entity=Entity;}
