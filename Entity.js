@@ -163,6 +163,16 @@
   Array.prototype.clone = function() {
     return this.slice(0);
   }
+  
+  /**
+   * Clears all the elements in the array.
+   *
+   * @returns {Array} The empty array
+   */
+  Array.prototype.clear = function() {
+    this.length = 0;
+    return this;
+  }
 
   /**
    * The MDN implementation of the Object keys function
@@ -398,5 +408,65 @@
     };
   })();
 
-  if(!window.$e || !window.Entity){window.$e=Entity;window.Entity=Entity;}
+  Entity.Event = (function() {
+    var DOMReadyCallbacks = [];
+    var isReady           = false;
+    var events = {};
+    
+    function onReady() {
+      if (!isReady) {
+        isReady = true;
+        for (var i in DOMReadyCallbacks) {
+          DOMReadyCallbacks[i]();
+        }
+        DOMReadyCallbacks.clear();
+      }
+    }
+    
+    function bind() {
+      if (!isReady) {
+        isReady = true;
+
+      if (document.readyState === 'complete') {
+        onReady();
+      } else if (document.addEventListener) {
+        document.addEventListener('DOMContentLoaded', DOMContentLoaded, false );
+        window.addEventListener('load', onReady, false);
+      } else if (document.attachEvent) {
+        document.attachEvent('onreadystatechange', DOMContentLoaded);
+
+        window.attachEvent('onload', onReady);
+      }
+    }
+    
+    function start() {
+    }
+
+    function stop(event) {
+      event.preventDefault(event);
+      event.stopPropagation(event);
+    }
+
+    function stopObserve() {
+    }
+    
+    events = {
+      ready: function(callback) {
+        DOMReadyCallbacks.push(callback);
+      },
+      
+      fire: function() {
+      },
+      
+      add: function() {
+      },
+      
+      remove: function(event) {
+      },
+    }
+  })();
+  
+  window.Entity = window.Entity || Entity;
+  window.$e = window.$e || Entity;
+
 })(window);
