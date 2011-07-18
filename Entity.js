@@ -424,7 +424,7 @@
     }
     
     function bind() {
-      if (!isReady) {
+      if (!isReady)
         isReady = true;
 
       if (document.readyState === 'complete') {
