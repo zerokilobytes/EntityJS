@@ -4,6 +4,7 @@
 <head>
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
   <title>Development</title>
+  <script type="text/javascript" src="https://getfirebug.com/firebug-lite-beta.js"></script>
   <script src="Entity.js" type="text/javascript"></script>
   <script type="text/javascript">
 
@@ -72,9 +73,10 @@
   </script>
   
    <script>
-   $e.Event.ready(function(){alert('Ready');});
+   $e.Event.ready(function(){console.log('Ready >>> 1');});
+  
     function test2(){
-      
+       document.getElementById('fire').fire('click');
     }
     </script>
   <style>
@@ -85,6 +87,6 @@
   </style>
 </head>
 <body onload = "test2()">
-  <div id="example"></div>
+  <button id="fire" onclick="alert('Completed');">Fire!</button>
 </body>
 </html>

@@ -49,7 +49,7 @@
     }
     return result;
   }
-  
+
   /**
    * The MDN implementation of the array isArray function
    *
@@ -152,7 +152,7 @@
       return [];
     return this.concat(arrOther.subtract(this));
   };
-  
+
   /**
    * The JPAQ implementation of the array union function.
    * Creates a shallow copy of this array.
@@ -163,7 +163,7 @@
   Array.prototype.clone = function() {
     return this.slice(0);
   }
-  
+
   /**
    * Clears all the elements in the array.
    *
@@ -193,7 +193,7 @@
     }
     return result;
   }
-  
+
   /**
    * Checks if a value is of the type supplied.
    * Throws a TypeError exception if value is not of the type supplied.
@@ -207,7 +207,7 @@
       throw new TypeError('Invalid type');
     }
   }
-  
+
   /**
    * Returns the base class of Entity objects
    * Throws a TypeError exception if value is not of the type supplied.
@@ -220,7 +220,7 @@
       init : function () {},
     }
   }
-  
+
   /**
    * Checks is an object has a property defined
    *
@@ -245,10 +245,12 @@
   }
 
   Entity.VERSION = '1.0';
-  
+
   Browser = {
-    Mozilla: (navigator.userAgent.indexOf('Mozilla') > -1),
-    IE: ((navigator.appName.indexOf('Microsoft Internet Explorer')> -1) || (navigator.appVersion.indexOf('MSIE') > -1))
+    Gecko: (/Gecko/.test(navigator.userAgent)),
+    IE: ((navigator.appName.indexOf('Microsoft Internet Explorer')> -1) || (navigator.appVersion.indexOf('MSIE') > -1)),
+    WebKit: (/AppleWebKit/.test(navigator.userAgent)),
+    Opera: (window.opera != undefined)
   }
 
   Entity.Model = (function(){
@@ -257,7 +259,7 @@
         this.init.apply(this, arguments);
       }
     }
-    
+
     /**
      * Creates a model using 'arguments'.
      *
@@ -298,7 +300,7 @@
       }
       return temp;
     }
-    
+
     /**
      * Extend a model properties from a list of arguments.
      *
@@ -346,7 +348,7 @@
       }
       return result;
     }
-    
+
     function map(enumerable, callback) {
       if(!isArray(enumerable)) {
         throw new TypeError();
@@ -376,7 +378,7 @@
     function typeName(object) {
       return typeof object;
     }
-    
+
     function isNumeric(object) {
       return !!(!isNaN(object));
     }
@@ -419,10 +421,10 @@
     var events = {};
 
     function _domLoadedListner() {
-      if (Browser.Mozilla) {
+      if (document.addEventListener) {
         document.removeEventListener('DOMContentLoaded', _domLoadedListner, false);
         _ready();
-      } else if (Browser.IE) {
+      } else {
         if (document.readyState === 'complete') {
           document.detachEvent('onreadystatechange', _domLoadedListner);
           _ready();
@@ -431,27 +433,24 @@
     }
 
     function _ready() {
-      if (!isReady) {
-        isReady = true;
-        for (var i in DOMReadyCallbacks) {
-          DOMReadyCallbacks[i]();
-        }
-        DOMReadyCallbacks.clear();
+      for (var i = 0; i < DOMReadyCallbacks.length; i++) {
+        DOMReadyCallbacks[i]();
       }
+      DOMReadyCallbacks.clear();
     }
 
     function _initReady() {
       if (!isReady)
         isReady = true;
 
-      if (Browser.Mozilla) {
+      if (document.addEventListener) {
         document.addEventListener('DOMContentLoaded', _domLoadedListner, false);
-      } else if(Browser.IE) {
+      } else {
         document.onreadystatechange = _domLoadedListner;
         window.onload = _ready;
       }
     }
-    
+
     function start() {
     }
 
@@ -462,27 +461,46 @@
 
     function stopObserve() {
     }
-    
+
     events = {
       ready: function(callback) {
         _initReady();
         DOMReadyCallbacks.push(callback);
       },
-      
-      fire: function() {
+
+      fire: function(element, event) {
+        if (document.createEventObject){
+          var eventObject = document.createEventObject();
+          return element.fireEvent('on' + event, eventObject)
+        } else {
+          var eventObject = document.createEvent('HTMLEvents');
+          eventObject.initEvent(event, true, true );
+          return !element.dispatchEvent(eventObject);
+        }
       },
-      
+
       add: function() {
       },
-      
+
       remove: function(event) {
       },
     }
     
+    elements = {
+      fire: function(event) {
+        events.fire(this, event);
+      }
+    }
+
+    extend(Element.prototype, {
+      fire: elements.fire
+    });
+
     return {
-      ready:      events.ready
+      ready:  events.ready,
+      fire: events.fire
     };
-    
+
   })();
 
   if(!window.$e){window.$e=Entity;window.Entity=Entity;}
