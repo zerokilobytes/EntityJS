@@ -479,13 +479,25 @@
         }
       },
 
-      add: function() {
+      add: function(element, type, callback) {
+        if(element.attachEvent) {
+          element[type+callback] = function(){callback.call(element, window.event);}
+          element.attachEvent( 'on' + type, element[type + callback] );
+        } else {
+          element.addEventListener( type, callback, false );
+        }
       },
 
-      remove: function(event) {
+      remove: function(element, type, callback) {
+        if(element.detachEvent) {
+          element.detachEvent('on' + type, element[type + callback]);
+          element[type+callback] = null;
+        } else {
+          element.removeEventListener( type, callback, false );
+        }
       },
     }
-    
+
     elements = {
       fire: function(event) {
         events.fire(this, event);
@@ -498,7 +510,8 @@
 
     return {
       ready:  events.ready,
-      fire: events.fire
+      fire: events.fire,
+      add: events.add
     };
 
   })();

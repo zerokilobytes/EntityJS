@@ -72,11 +72,12 @@
   </script>
   
    <script>
-   $e.Event.ready(function(){console.log('Ready >>> 1');});
+   //$e.Event.ready(function(){console.log('Ready >>> 1');});
   
     function test2(){
        var ace = document.getElementById("fire");
-       Entity.Event.fire(ace, 'click');
+       Entity.Event.add(ace, 'click', function() {alert('XXX');});
+       Entity.Event.add(ace, 'click', function() {alert('YYY');});
     }
     </script>
   <style>
@@ -87,6 +88,6 @@
   </style>
 </head>
 <body onload = "test2()">
-  <button id="fire" onclick="alert('Completed');">Fire!</button>
+  <button id="fire">Fire!</button>
 </body>
 </html>
