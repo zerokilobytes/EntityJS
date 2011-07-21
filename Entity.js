@@ -457,17 +457,9 @@
       }
     }
 
-    function start() {
-      //TODO: Implement
-    }
-
     function stop(event) {
       event.preventDefault(event);
       event.stopPropagation(event);
-    }
-
-    function stopObserve() {
-      //TODO: Implement
     }
 
     events = {
@@ -487,21 +479,24 @@
         }
       },
 
-      add: function(element, event, callback) {
+      add: function(element, event, callback, useCapture) {
+        useCapture = useCapture || false;
         if(element.attachEvent) {
           element[event + callback] = _setHandler(element, callback);
+          alert(Array.isArray(element.reverse()));
           element.attachEvent('on' + event, element[event + callback]);
         } else {
-          element.addEventListener(event, callback, false);
+          element.addEventListener(event, callback, useCapture);
         }
       },
 
-      remove: function(element, event, callback) {
+      remove: function(element, event, callback, useCapture) {
+        useCapture = useCapture || false;
         if(element.detachEvent) {
           element.detachEvent('on' + event, element[event + callback]);
           element[event + callback] = null;
         } else {
-          element.removeEventListener(event, callback, false);
+          element.removeEventListener(event, callback, useCapture);
         }
       },
     }
@@ -511,23 +506,26 @@
         events.fire(this, event);
       },
 
-      add: function(event, callback) {
-        events.add(this, event, callback);
+      add: function(event, callback, useCapture) {
+        events.add(this, event, callback, useCapture);
       },
 
-      remove: function(event, callback) {
-        events.remove(this, event, callback);
+      remove: function(event, callback, useCapture) {
+        events.remove(this, event, callback, useCapture);
       }
     }
 
     extend(Element.prototype, {
-      fire: elements.fire
+      fireEvent:    elements.fire,
+      oberve:       elements.add,
+      stopOberving: elements.remove
     });
 
     return {
-      ready:  events.ready,
-      fire:   events.fire,
-      add:    events.add
+      ready:        events.ready,
+      fire:         events.fire,
+      add:          events.add,
+      remove:       events.remove
     };
 
   })();
