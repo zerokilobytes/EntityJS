@@ -398,7 +398,7 @@
 
   Entity.Func = (function(){
     function clone(object) {
-      if(typeof(object) != 'object' || typeof(object) !='function' || Array.isArray(object))
+      if(typeof(object) != 'object' || typeof(object) != 'function' || Array.isArray(object))
         return object;
       var temp = {}; 
       for(var key in object) {
@@ -417,7 +417,6 @@
 
   Entity.Event = (function() {
     var DOMReadyCallbacks = [];
-    var isReady           = false;
     var events = {};
 
     function _domLoadedListner() {
@@ -440,9 +439,6 @@
     }
 
     function _initReady() {
-      if (!isReady)
-        isReady = true;
-
       if (document.addEventListener) {
         document.addEventListener('DOMContentLoaded', _domLoadedListner, false);
       } else {
@@ -450,14 +446,14 @@
         window.onload = _ready;
       }
     }
-    
+
     function _setHandler(element, callback){
       return function(){
         callback.call(element, window.event);
       }
     }
 
-    function stop(event) {
+    function _stop(event) {
       event.preventDefault(event);
       event.stopPropagation(event);
     }
@@ -483,7 +479,6 @@
         useCapture = useCapture || false;
         if(element.attachEvent) {
           element[event + callback] = _setHandler(element, callback);
-          alert(Array.isArray(element.reverse()));
           element.attachEvent('on' + event, element[event + callback]);
         } else {
           element.addEventListener(event, callback, useCapture);
@@ -516,7 +511,7 @@
     }
 
     extend(Element.prototype, {
-      fireEvent:    elements.fire,
+      fire:         elements.fire,
       oberve:       elements.add,
       stopOberving: elements.remove
     });
@@ -524,8 +519,8 @@
     return {
       ready:        events.ready,
       fire:         events.fire,
-      add:          events.add,
-      remove:       events.remove
+      oberve:       events.add,
+      stopOberving: events.remove
     };
 
   })();

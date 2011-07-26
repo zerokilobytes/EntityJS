@@ -77,8 +77,8 @@
     function test2(){
        var ace = document.getElementById("fire");
        funcX = function() {alert('XXX');};
-       Entity.Event.add(ace, 'mouseover', funcX, true);
-       Entity.Event.add(ace, 'mouseover', function() {alert('YYY');}, true);
+       ace.oberve('mouseover', funcX, true);
+       ace.oberve('mouseover', function() {alert('YYY');}, true);
        //Entity.Event.remove(ace, 'click', funcX);
     }
     </script>
